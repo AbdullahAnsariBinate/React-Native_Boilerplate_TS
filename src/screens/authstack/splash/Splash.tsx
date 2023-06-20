@@ -24,17 +24,15 @@ const SplashScreen: React.FC = () => {
         initialIconVal.value = withTiming(1, { duration: 2000 });
         setTimeout(() => {
             NavigationService.push(SCREENS.LOGIN);
-        }, 1500)
+        }, 1200)
     }, []);
 
     return (
-        <SafeAreaView>
             <View style={authStyles?.splash}>
                 <Animated.View style={[authStyles.logoView, animationFunc]}>
                     <FastImage source={imgs?.Logo} style={authStyles.logo} resizeMode="contain" />
                 </Animated.View>
             </View>
-        </SafeAreaView>
     );
 };
 

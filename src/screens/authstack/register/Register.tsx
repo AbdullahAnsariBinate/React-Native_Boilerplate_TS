@@ -1,5 +1,5 @@
-import { SafeAreaView, View, Alert } from 'react-native'
 import React, { useEffect } from 'react'
+import { SafeAreaView, View, Alert } from 'react-native'
 import { Form } from './Form'
 import authStyles from '../authStyles'
 import FastImage from 'react-native-fast-image'
@@ -12,9 +12,11 @@ import RNBounceable from '@freakycoder/react-native-bounceable'
 import firestore from '@react-native-firebase/firestore';
 import uuid from 'react-native-uuid';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated'
+import LoadingWrapper from '@shared-components/loading-wrapper/loadingWrapper'
 
 
 const Register: React.FC = () => {
+    const [isShow, setIsShow] = React.useState<boolean>(false);
 
     const initialIconVal = useSharedValue(0)
 
@@ -35,6 +37,7 @@ const Register: React.FC = () => {
     }, []);
 
     const handleSubmit = (value: any) => {
+        setIsShow(true)
         console.log('register', value)
         firestore().collection('Users')
             .doc(userId).set({
@@ -43,16 +46,17 @@ const Register: React.FC = () => {
                 password: value?.password,
                 userId: userId
             }).then(() => {
-                console.log('User added!');
-                Alert.alert('User added uccessfully')
-            }).catch(err => {
-                console.log(err, 'error-register')
-                Alert.alert('User added unsuccessfully')
+                setIsShow(false)
+                NavigationService.push(SCREENS.LOGIN)
+            }).catch(() => {
+                setIsShow(false)
             });
     }
 
     return (
-        <SafeAreaView style={authStyles.safeAreaView}>
+        <>
+            <LoadingWrapper show={isShow} name='Spinning Circles Loading Animation' source='https://assets5.lottiefiles.com/private_files/lf30_tcux3hw6.json' author='Abdullah' path={require('./../../appstack/chat/chatscreen/animation.json')} />
+
             <ScrollView >
                 <View style={authStyles?.auth}>
                     <Animated.View style={[authStyles.logoView, animatedStyle]}>
@@ -75,7 +79,7 @@ const Register: React.FC = () => {
                     </View>
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        </>
     )
 }
 
