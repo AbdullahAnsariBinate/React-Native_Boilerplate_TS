@@ -15,6 +15,8 @@ import { useDispatch } from 'react-redux'
 import { todoDelete } from '@services/redux/actions/deleteTodo'
 import { deteleToken } from '@services/redux/actions/deleteToken'
 import LoadingWrapper from '@shared-components/loading-wrapper/loadingWrapper'
+import globalStyles from 'assets/stylings/globalStyles'
+import LinearGradient from 'react-native-linear-gradient'
 
 let id = '';
 const Chatlist: React.FC = () => {
@@ -34,7 +36,7 @@ const Chatlist: React.FC = () => {
         dispatch(deteleToken())
         setIsShow(false)
     }
-  
+
     const getUsers = async (): Promise<void> => {
         try {
             const storedUserId = await AsyncStorage.getItem('USERID');
@@ -58,6 +60,10 @@ const Chatlist: React.FC = () => {
         }
     };
 
+
+    const handleSubmit = () => {
+        NavigationService.push(SCREENS.TODO)
+    }
     //more professional way
     // const getUsers = async (): Promise<void> => {
     //     try {
@@ -79,7 +85,15 @@ const Chatlist: React.FC = () => {
 
     return (
         <>
-            <LoadingWrapper show={isShow} name='Spinning Circles Loading Animation' source='https://assets5.lottiefiles.com/private_files/lf30_tcux3hw6.json' author='Abdullah' path={require('./../chatscreen/animation.json')} />
+            <View style={{ flex: 1 }}>
+
+                <RNBounceable onPress={handleSubmit} >
+                    <LinearGradient colors={['#0493c8', '#1c66b5']} style={globalStyles.button}>
+                        <Text style={globalStyles?.buttonText}>Register</Text>
+                    </LinearGradient>
+                </RNBounceable>
+            </View>
+            {/* <LoadingWrapper show={isShow} name='Spinning Circles Loading Animation' source='https://assets5.lottiefiles.com/private_files/lf30_tcux3hw6.json' author='Abdullah' path={require('./../chatscreen/animation.json')} />
             <View style={styles.container}>
                 <View style={styles.placeholder} />
                 <Text style={styles.title}>Chat</Text>
@@ -99,7 +113,7 @@ const Chatlist: React.FC = () => {
                         backgroundColor: themes?.colors?.offWhite, // Example of a supported backgroundColor prop
                     }}
                 />
-            </View>
+            </View> */}
 
         </>
 

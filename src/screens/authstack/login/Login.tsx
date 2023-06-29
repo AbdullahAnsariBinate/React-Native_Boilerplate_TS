@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView, Pressable, Text } from "react-native"
+import { View, ScrollView, Pressable, Text, Alert } from "react-native"
 import { Form } from './Form'
 import authStyles from '../authStyles'
 import FastImage from 'react-native-fast-image'
@@ -7,7 +7,7 @@ import { imgs } from 'assets/imgs'
 import * as NavigationService from "react-navigation-helpers";
 import { SCREENS } from '@shared-constants'
 import firestore from '@react-native-firebase/firestore';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated'
+import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming, Easing } from 'react-native-reanimated'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux'
 import { token } from '@services/redux/actions/token'
@@ -17,29 +17,33 @@ import LoadingWrapper from '@shared-components/loading-wrapper/loadingWrapper'
 const Login: React.FC = () => {
     const [isShow, setIsShow] = React.useState<boolean>(false);
     const dispatch = useDispatch();
-    const initialIconVal = useSharedValue(0)
+    const initialIconVal = useSharedValue(-80)
+    const animateBottom = useSharedValue(-100)
+
+
     const animatedStyle = useAnimatedStyle(() => {
         return {
             transform: [
-                { scale: initialIconVal.value },
-                { translateX: initialIconVal.value },
-                { rotate: `${initialIconVal.value * (360 * 2)}deg` },
+                { rotate: `${initialIconVal.value}deg` },
             ]
         }
     })
 
-
-
+    const animateBottomStyle = useAnimatedStyle(() => {
+        return {
+            bottom: animateBottom.value
+        }
+    }, [])
     React.useEffect(() => {
-        initialIconVal.value = withTiming(1, { duration: 2000 }), withSpring(1);
-
+        initialIconVal.value = withSpring(0);
+        animateBottom.value = withTiming(0, { duration: 600, easing: Easing.bounce })
     }, []);
 
     const handleSubmit = (values: any) => {
         setIsShow(true)
         firestore()
             .collection('Users')
-            // Filter results
+            // Filter resultsr
             .where("email", '==', values.email)
             .get()
             .then(res => {
@@ -76,12 +80,12 @@ const Login: React.FC = () => {
                     // handleForgot={handleForgot}
                     // onLoginPress={() => navigation.navigate('login')}
                     />
-                    <View style={authStyles.bottomlink}>
-                        <Text style={authStyles.bottomlinkText}>Don't have an account? </Text>
+                    <Animated.View style={[authStyles.bottomlink, animateBottomStyle]}>
+                        <Text style={authStyles.bottomlinkText}>Don't have an account?</Text>
                         <Pressable onPress={() => NavigationService.push(SCREENS.REGISTER)}>
                             <Text style={authStyles.bottomlinkTextNav}>Register Now</Text>
                         </Pressable>
-                    </View>
+                    </Animated.View>
                 </View>
             </ScrollView>
         </>

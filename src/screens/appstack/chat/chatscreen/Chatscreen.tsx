@@ -128,7 +128,7 @@ const Chatscreen: React.FC = () => {
           <RNBounceable onPress={handleBack} style={{ padding: 4 }}>
             <FastImage source={icons?.Back} style={appStyles.back} />
           </RNBounceable>
-          <Text style={appStyles.headerText}>{((route?.params as RouteParams)?.data?.name).toUpperCase()}</Text>
+          <Text style={appStyles.headerText}>{((route?.params as RouteParams)?.data?.name)}</Text>
           <View style={appStyles.back1} />
         </View>
         <GiftedChat
